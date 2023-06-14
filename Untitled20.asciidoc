@@ -1,0 +1,930 @@
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 1**
+
+Given a singly linked list, delete **middle** of the linked list. For example, if given linked list is 1->2->**3**->4->5 then linked list should be modified to 1->2->4->5.If there are **even** nodes, then there would be **two middle** nodes, we need to delete the second middle element. For example, if given linked list is 1->2->3->4->5->6 then it should be modified to 1->2->3->5->6.If the input linked list is NULL or has 1 node, then it should return NULL
+
+**Example 1:**
+
+```
+Input:
+LinkedList: 1->2->3->4->5
+Output:1 2 4 5
+
+```
+
+**Example 2:**
+
+Input:
+LinkedList: 2->4->6->7->5->1
+Output:2 4 6 5 1
+----
+
+
++*In[2]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def delete_middle_node(head):
+    if head is None or head.next is None:
+        return None
+
+    slow = head
+    fast = head
+    prev = None
+
+    while fast is not None and fast.next is not None:
+        fast = fast.next.next
+        prev = slow
+        slow = slow.next
+
+    # Delete the middle node(s)
+    prev.next = slow.next
+
+    return head
+# Example 1
+# LinkedList: 1->2->3->4->5
+head1 = Node(1)
+head1.next = Node(2)
+head1.next.next = Node(3)
+head1.next.next.next = Node(4)
+head1.next.next.next.next = Node(5)
+
+new_head1 = delete_middle_node(head1)
+while new_head1 is not None:
+    print(new_head1.data, end=" ")
+    new_head1 = new_head1.next
+    print()
+
+
+----
+
+
++*Out[2]:*+
+----
+1 
+2 
+4 
+5 
+----
+
+
++*In[3]:*+
+[source, ipython3]
+----
+# Example 2
+# LinkedList: 2->4->6->7->5->1
+head2 = Node(2)
+head2.next = Node(4)
+head2.next.next = Node(6)
+head2.next.next.next = Node(7)
+head2.next.next.next.next = Node(5)
+head2.next.next.next.next.next = Node(1)
+
+new_head2 = delete_middle_node(head2)
+while new_head2 is not None:
+    print(new_head2.data, end=" ")
+    new_head2 = new_head2.next
+----
+
+
++*Out[3]:*+
+----
+2 4 6 5 1 ----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 2**
+
+Given a linked list of **N** nodes. The task is to check if the linked list has a loop. Linked list can contain self loop.
+
+**Example 1:**
+
+```
+Input:
+N = 3
+value[] = {1,3,4}
+x(position at which tail is connected) = 2
+Output:True
+Explanation:In above test case N = 3.
+The linked list with nodes N = 3 is
+given. Then value of x=2 is given which
+means last node is connected with xth
+node of linked list. Therefore, there
+exists a loop.
+```
+
+**Example 2:**
+
+Input:
+N = 4
+value[] = {1,8,3,4}
+x = 0
+Output:False
+Explanation:For N = 4 ,x = 0 means
+then lastNode->next = NULL, then
+the Linked list does not contains
+any loop.
+----
+
+
++*In[4]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def detect_loop(head):
+    slow = head
+    fast = head
+
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+
+        if slow == fast:
+            return True
+
+    return False
+# Example 1
+# LinkedList: 1->3->4
+head1 = Node(1)
+head1.next = Node(3)
+head1.next.next = Node(4)
+head1.next.next.next = head1.next  # Creating a loop by connecting the last node to the second node
+
+result1 = detect_loop(head1)
+print(result1)
+----
+
+
++*Out[4]:*+
+----
+True
+----
+
+
++*In[5]:*+
+[source, ipython3]
+----
+# Example 2
+# LinkedList: 1->8->3->4
+head2 = Node(1)
+head2.next = Node(8)
+head2.next.next = Node(3)
+head2.next.next.next = Node(4)
+
+result2 = detect_loop(head2)
+print(result2)
+----
+
+
++*Out[5]:*+
+----
+False
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 3**
+
+Given a linked list consisting of **L** nodes and given a number **N**. The task is to find the **N**th node from the end of the linked list.
+
+**Example 1:**
+
+```
+Input:
+N = 2
+LinkedList: 1->2->3->4->5->6->7->8->9
+Output:8
+Explanation:In the first example, there
+are 9 nodes in linked list and we need
+to find 2nd node from end. 2nd node
+from end is 8.
+
+```
+
+**Example 2:**
+
+Input:
+N = 5
+LinkedList: 10->5->100->5
+Output:-1
+Explanation:In the second example, there
+are 4 nodes in the linked list and we
+need to find 5th from the end. Since 'n'
+is more than the number of nodes in the
+linked list, the output is -1.
+----
+
+
++*In[6]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def find_nth_from_end(head, N):
+    if head is None:
+        return -1
+
+    slow = head
+    fast = head
+
+    # Move the fast pointer N nodes ahead
+    for _ in range(N):
+        if fast is None:
+            return -1
+        fast = fast.next
+
+    # Move both pointers one node at a time until fast reaches the end
+    while fast is not None:
+        slow = slow.next
+        fast = fast.next
+
+    return slow.data
+# Example 1
+# LinkedList: 1->2->3->4->5->6->7->8->9
+head1 = Node(1)
+head1.next = Node(2)
+head1.next.next = Node(3)
+head1.next.next.next = Node(4)
+head1.next.next.next.next = Node(5)
+head1.next.next.next.next.next = Node(6)
+head1.next.next.next.next.next.next = Node(7)
+head1.next.next.next.next.next.next.next = Node(8)
+head1.next.next.next.next.next.next.next.next = Node(9)
+
+result1 = find_nth_from_end(head1, 2)
+print(result1)
+----
+
+
++*Out[6]:*+
+----
+8
+----
+
+
++*In[7]:*+
+[source, ipython3]
+----
+# Example 2
+# LinkedList: 10->5->100->5
+head2 = Node(10)
+head2.next = Node(5)
+head2.next.next = Node(100)
+head2.next.next.next = Node(5)
+
+result2 = find_nth_from_end(head2, 5)
+print(result2)
+
+----
+
+
++*Out[7]:*+
+----
+-1
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 4**
+
+Given a singly linked list of characters, write a function that returns true if the given list is a palindrome, else false.
+
+**Examples:**
+
+> Input: R->A->D->A->R->NULL
+> 
+> 
+> **Output:** Yes
+> 
+> **Input:** C->O->D->E->NULL
+> 
+> **Output:** No
+> 
+
+<aside>
+💡 **Question 5**
+
+</aside>
+----
+
+
++*In[8]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def is_palindrome(head):
+    stack = []
+
+    # Traverse the linked list and store characters in the stack
+    current = head
+    while current is not None:
+        stack.append(current.data)
+        current = current.next
+
+    # Traverse the linked list again, comparing characters with the stack
+    current = head
+    while current is not None:
+        if current.data != stack.pop():
+            return False
+        current = current.next
+
+    # If the stack is empty, the linked list is a palindrome
+    return len(stack) == 0
+# Example 1
+# LinkedList: R->A->D->A->R
+head1 = Node('R')
+head1.next = Node('A')
+head1.next.next = Node('D')
+head1.next.next.next = Node('A')
+head1.next.next.next.next = Node('R')
+
+result1 = is_palindrome(head1)
+print(result1)
+
+
+----
+
+
++*Out[8]:*+
+----
+True
+----
+
+
++*In[9]:*+
+[source, ipython3]
+----
+# Example 2
+# LinkedList: C->O->D->E
+head2 = Node('C')
+head2.next = Node('O')
+head2.next.next = Node('D')
+head2.next.next.next = Node('E')
+
+result2 = is_palindrome(head2)
+print(result2)
+----
+
+
++*Out[9]:*+
+----
+False
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 5**
+
+Given a linked list of **N** nodes such that it may contain a loop.
+
+A loop here means that the last node of the link list is connected to the node at position X(1-based index). If the link list does not have any loop, X=0.
+
+Remove the loop from the linked list, if it is present, i.e. unlink the last node which is forming the loop.
+
+**Example 1:**
+
+```
+Input:
+N = 3
+value[] = {1,3,4}
+X = 2
+Output:1
+Explanation:The link list looks like
+1 -> 3 -> 4
+     ^    |
+     |____|
+A loop is present. If you remove it
+successfully, the answer will be 1.
+
+```
+
+**Example 2:**
+
+```
+Input:
+N = 4
+value[] = {1,8,3,4}
+X = 0
+Output:1
+Explanation:The Linked list does not
+contains any loop.
+```
+
+**Example 3:**
+
+Input:
+N = 4
+value[] = {1,2,3,4}
+X = 1
+Output:1
+Explanation:The link list looks like
+1 -> 2 -> 3 -> 4
+^              |
+|______________|
+A loop is present.
+If you remove it successfully,
+the answer will be 1.
+----
+
+
++*In[10]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def detect_and_remove_loop(head):
+    slow = head
+    fast = head
+
+    # Detect the loop using the Floyd's Cycle Detection Algorithm
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+
+        if slow == fast:
+            break
+
+    # If no loop is detected, return the linked list as is
+    if fast is None or fast.next is None:
+        return head
+
+    # Move the fast pointer back to the head and keep the slow pointer at the meeting point
+    fast = head
+    while slow.next != fast.next:
+        slow = slow.next
+        fast = fast.next
+
+    # Remove the loop by setting the next pointer of the node where the loop starts to NULL
+    slow.next = None
+
+    return head
+# Example 1
+# LinkedList: 1->3->4
+head1 = Node(1)
+head1.next = Node(3)
+head1.next.next = Node(4)
+head1.next.next.next = head1.next  # Creating a loop by connecting the last node to the second node
+
+result1 = detect_and_remove_loop(head1)
+while result1 is not None:
+    print(result1.data, end=" ")
+    result1 = result1.next
+----
+
+
++*Out[10]:*+
+----
+1 3 4 ----
+
+
++*In[11]:*+
+[source, ipython3]
+----
+# Example 2
+# LinkedList: 1->8->3->4
+head2 = Node(1)
+head2.next = Node(8)
+head2.next.next = Node(3)
+head2.next.next.next = Node(4)
+
+result2 = detect_and_remove_loop(head2)
+while result2 is not None:
+    print(result2.data, end=" ")
+    result2 = result2.next
+----
+
+
++*Out[11]:*+
+----
+1 8 3 4 ----
+
+
++*In[13]:*+
+[source, ipython3]
+----
+# Example 3
+# LinkedList: 1->2->3->4
+head3 = Node(1)
+head3.next = Node(2)
+head3.next.next = Node(3)
+head3.next.next.next = Node(4)
+head3.next.next.next.next = head3  # Creating a loop by connecting the last node to the first node
+
+result3 = detect_and_remove_loop(head3)
+while result3 is not None:
+    print(result3.data, end=" ")
+    result3 = result3.next
+----
+
+
++*Out[13]:*+
+----
+1 ----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 6**
+
+Given a linked list and two integers M and N. Traverse the linked list such that you retain M nodes then delete next N nodes, continue the same till end of the linked list.
+
+Difficulty Level: Rookie
+
+**Examples**:
+
+Input:
+M = 2, N = 2
+Linked List: 1->2->3->4->5->6->7->8
+Output:
+Linked List: 1->2->5->6
+
+Input:
+M = 3, N = 2
+Linked List: 1->2->3->4->5->6->7->8->9->10
+Output:
+Linked List: 1->2->3->6->7->8
+
+Input:
+M = 1, N = 1
+Linked List: 1->2->3->4->5->6->7->8->9->10
+Output:
+Linked List: 1->3->5->7->9
+----
+
+
++*In[14]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def retain_delete(head, M, N):
+    current = head
+    previous = None
+    mCount = 0
+    nCount = 0
+
+    while current is not None:
+        if mCount > 0:
+            mCount += 1
+            nCount += 1
+            current = current.next
+        elif mCount == 0:
+            mCount += 1
+            previous = current
+            current = current.next
+
+        if nCount == N:
+            mCount = 0
+            nCount = 0
+            previous.next = current
+            previous = current
+            current = current.next
+
+    return head
+# Example 1
+# M = 2, N = 2
+# LinkedList: 1->2->3->4->5->6->7->8
+head1 = Node(1)
+head1.next = Node(2)
+head1.next.next = Node(3)
+head1.next.next.next = Node(4)
+head1.next.next.next.next = Node(5)
+head1.next.next.next.next.next = Node(6)
+head1.next.next.next.next.next.next = Node(7)
+head1.next.next.next.next.next.next.next = Node(8)
+
+result1 = retain_delete(head1, 2, 2)
+while result1 is not None:
+    print(result1.data, end=" ")
+    result1 = result1.next
+
+----
+
+
++*Out[14]:*+
+----
+1 4 5 8 ----
+
+
++*In[15]:*+
+[source, ipython3]
+----
+# Example 2
+# M = 3, N = 2
+# LinkedList: 1->2->3->4->5->6->7->8->9->10
+head2 = Node(1)
+head2.next = Node(2)
+head2.next.next = Node(3)
+head2.next.next.next = Node(4)
+head2.next.next.next.next = Node(5)
+head2.next.next.next.next.next = Node(6)
+head2.next.next.next.next.next.next = Node(7)
+head2.next.next.next.next.next.next.next = Node(8)
+head2.next.next.next.next.next.next.next.next = Node(9)
+head2.next.next.next.next.next.next.next.next.next = Node(10)
+
+result2 = retain_delete(head2, 3, 2)
+while result2 is not None:
+    print(result2.data, end=" ")
+    result2 = result2.next
+----
+
+
++*Out[15]:*+
+----
+1 4 5 8 9 10 ----
+
+
++*In[16]:*+
+[source, ipython3]
+----
+# Example 3
+# M = 1, N = 1
+# LinkedList: 1->2->3->4->5->6->7->8->9->10
+head3 = Node(1)
+head3.next = Node(2)
+head3.next.next = Node(3)
+head3.next.next.next = Node(4)
+head3.next.next.next.next = Node(5)
+head3.next.next.next.next.next = Node(6)
+head3.next.next.next.next.next.next = Node(7)
+head3.next.next.next.next.next.next.next = Node(8)
+head3.next.next.next.next.next.next.next.next = Node(9)
+head3.next.next.next.next.next.next.next.next.next = Node(10)
+
+result3 = retain_delete(head3, 1, 1)
+while result3 is not None:
+    print(result3.data, end=" ")
+    result3 = result3.next
+----
+
+
++*Out[16]:*+
+----
+1 3 4 6 7 9 10 ----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 7**
+
+Given two linked lists, insert nodes of second list into first list at alternate positions of first list.
+For example, if first list is 5->7->17->13->11 and second is 12->10->2->4->6, the first list should become 5->12->7->10->17->2->13->4->11->6 and second list should become empty. The nodes of second list should only be inserted when there are positions available. For example, if the first list is 1->2->3 and second list is 4->5->6->7->8, then first list should become 1->4->2->5->3->6 and second list to 7->8.
+
+Use of extra space is not allowed (Not allowed to create additional nodes), i.e., insertion must be done in-place. Expected time complexity is O(n) where n is number of nodes in first list.
+
+
+----
+
+
++*In[17]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def insert_at_alternate_positions(first, second):
+    if second is None:
+        return first
+
+    current_first = first
+    current_second = second
+
+    while current_first is not None and current_second is not None:
+        first_next = current_first.next
+        second_next = current_second.next
+
+        current_second.next = first_next
+        current_first.next = current_second
+
+        current_first = first_next
+        current_second = second_next
+
+    if current_second is not None:
+        current_first.next = current_second
+
+    return first
+# Example
+# First list: 5->7->17->13->11
+# Second list: 12->10->2->4->6
+first_head = Node(5)
+first_head.next = Node(7)
+first_head.next.next = Node(17)
+first_head.next.next.next = Node(13)
+first_head.next.next.next.next = Node(11)
+
+second_head = Node(12)
+second_head.next = Node(10)
+second_head.next.next = Node(2)
+second_head.next.next.next = Node(4)
+second_head.next.next.next.next = Node(6)
+
+first_head = insert_at_alternate_positions(first_head, second_head)
+
+# Printing the modified first list
+current = first_head
+while current is not None:
+    print(current.data, end=" ")
+    current = current.next
+----
+
+
++*Out[17]:*+
+----
+5 12 7 10 17 2 13 4 11 6 ----
+
+
++*In[18]:*+
+[source, ipython3]
+----
+# Printing the modified second list (should be empty)
+current = second_head
+while current is not None:
+    print(current.data, end=" ")
+    current = current.next
+----
+
+
++*Out[18]:*+
+----
+12 7 10 17 2 13 4 11 6 ----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+💡 **Question 8**
+
+Given a singly linked list, find if the linked list is [circular](https://www.geeksforgeeks.org/circular-linked-list/amp/) or not.
+
+> A linked list is called circular if it is not NULL-terminated and all nodes are connected in the form of a cycle. Below is an example of a circular linked list.
+> 
+----
+
+
++*In[19]:*+
+[source, ipython3]
+----
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def is_circular_linked_list(head):
+    if head is None:
+        return False
+
+    slow = head
+    fast = head.next
+
+    while fast is not None and fast.next is not None:
+        if slow == fast:
+            return True
+        slow = slow.next
+        fast = fast.next.next
+
+    return False
+# Example
+# Circular linked list: 1->2->3->4->5->2 (2 points back to 2)
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+head.next.next.next.next.next = head.next
+
+result = is_circular_linked_list(head)
+print(result)
+----
+
+
++*Out[19]:*+
+----
+True
+----
+
+
++*In[20]:*+
+[source, ipython3]
+----
+# Non-circular linked list: 1->2->3->4->5
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+result = is_circular_linked_list(head)
+print(result)
+----
+
+
++*Out[20]:*+
+----
+False
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
